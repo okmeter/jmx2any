@@ -4,7 +4,6 @@ import javax.management.ObjectName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Locale;
 
 public final class DefaultFormatter {
 
@@ -48,6 +47,6 @@ public final class DefaultFormatter {
         sb.append(fieldname(beanString(bean)));
         sb.append('_');
         sb.append(fieldname(attribute));
-        return sb.toString().toLowerCase(Locale.US);
+        return sb.toString();
     }
 }

@@ -12,13 +12,9 @@ public final class Agent {
 
     private final String filename;
     private final ScheduledThreadPoolExecutor executor;
-    private final boolean console;
-    private final boolean all;
 
-    public Agent(String filename, boolean console, boolean all) {
+    public Agent(String filename) {
         this.filename = filename;
-        this.console = console;
-        this.all = all;
         this.executor = new ScheduledThreadPoolExecutor(1);
         this.executor.setThreadFactory(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -32,7 +28,7 @@ public final class Agent {
     public void start() {
         try {
             final Exporter exporter = new Exporter();
-            final Exporter.Config config = exporter.load(filename, console, all);
+            final Exporter.Config config = exporter.load(filename);
             executor.scheduleAtFixedRate(new Runnable() {
                 public void run() {
                     try {
@@ -40,10 +36,9 @@ public final class Agent {
                     } catch (Exception e) {
                         System.err.println("jmx2any: " + e.getMessage());
                     }
-                    if (console) {
-                        System.out.println("-");
+                    System.out.println("-");
                     }
-                }
+
             }, config.initialDelay, config.repeatDelay, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             System.err.println("jmx2any: " + e.getMessage());
@@ -56,13 +51,6 @@ public final class Agent {
 
     public static void premain(String args, Instrumentation inst) {
         System.out.println("Starting jmx2any agent");
-        new Agent(args, false, false).start();
+        new Agent(args).start();
     }
-
-//    public static void main(String[] args) throws Exception {
-//        premain("/Users/tcurdt/Projects/jmx2any/src/examples/config.yaml", null);
-//        while(true) {
-//            Thread.sleep(10*1000);
-//        }
-//    }
 }

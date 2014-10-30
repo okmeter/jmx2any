@@ -27,10 +27,10 @@ public final class OutputFilter implements JmxPipe {
         output.open();
     }
 
-    public void output(String node, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException, AttributeNotFoundException, ReflectionException, MBeanException {
+    public void output(String url, String node, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException, AttributeNotFoundException, ReflectionException, MBeanException {
         final String name = formatter.attributeName(metric.getBeanName(),metric.getAttributeName());
         if (metrics.contains(name)) {
-            output.output(node, metric);
+            output.output(url, node, metric);
         } else {
             // System.out.println("filtering out: " + name);
         }

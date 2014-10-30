@@ -6,7 +6,7 @@ import java.io.IOException;
 public interface Output {
 
     public void open() throws IOException;
-    public void output(String node, String key, Number value) throws IOException;
+    public void output(String url, String key, Number value) throws IOException;
     public void close() throws IOException;
 
 }

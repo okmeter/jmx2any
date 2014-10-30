@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface JmxPipe {
 
     public void open() throws IOException;
-    public void output(String node, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException, AttributeNotFoundException, ReflectionException, MBeanException;
+    public void output(String url, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException, AttributeNotFoundException, ReflectionException, MBeanException;
     public void close() throws IOException;
 
 }

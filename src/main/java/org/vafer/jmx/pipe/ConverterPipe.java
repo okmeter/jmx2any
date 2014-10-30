@@ -24,64 +24,50 @@ public final class ConverterPipe implements JmxPipe {
 
     private final Output output;
     private final String prefix;
-    private final Enums enums;
 
-    public ConverterPipe(Output output, String prefix, Enums enums) {
+    public ConverterPipe(Output output, String prefix) {
         this.output = output;
         this.prefix = prefix;
-        this.enums = enums;
     }
 
     public void open() throws IOException {
         output.open();
     }
 
-    public void output(String node, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException, AttributeNotFoundException, ReflectionException, MBeanException {
+    public void output(String url, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException, AttributeNotFoundException, ReflectionException, MBeanException {
         final String attribute = formatter.attributeName(metric.getBeanName(), metric.getAttributeName());
         try {
             final Object value = metric.getAttributeValue();
-            flatten(node, prefix + attribute, value);
+            flatten(url, prefix + attribute, value);
         } catch(Exception e) {
             System.err.println(String.format("Failed to read attribute %s [%s]", attribute, e.getMessage()));
         }
     }
 
-    private void flatten(String node, String attribute, Object value) throws IOException {
+    private void flatten(String url, String attribute, Object value) throws IOException {
         if (value instanceof Number) {
 
-            output.output(node, attribute, (Number) value);
-
-        } else if (value instanceof String) {
-
-            final Number v = enums.resolve(attribute, (String) value);
-            if (v != null) {
-                output.output(node, attribute, v);
-            } else {
-                System.err.println(String.format("Missing enum for attribute %s [%s]", attribute, value));
-            }
+            output.output(url, attribute, (Number) value);
 
         } else if (value instanceof Set) {
 
             final Set set = (Set) value;
-            flatten(node, attribute + "__size", set.size());
             for(Object entry : set) {
-                flatten(node, attribute + "___" + entry, 1);
+                flatten(url, attribute + "___" + entry, 1);
             }
 
         } else if (value instanceof List) {
 
             final List list = (List)value;
-            flatten(node, attribute + "__size", list.size());
             for(int i = 0; i<list.size(); i++) {
-                flatten(node, attribute + "___" + i, list.get(i));
+                flatten(url, attribute + "___" + i, list.get(i));
             }
 
         } else if (value instanceof Map) {
 
             final Map<?,?> map = (Map<?,?>) value;
-            flatten(node, attribute + "__size", map.size());
             for(Map.Entry<?, ?> entry : map.entrySet()) {
-                flatten(node, attribute + "___" + entry.getKey(), entry.getValue());
+                flatten(url, attribute + "___" + entry.getKey(), entry.getValue());
             }
 
         } else if (value instanceof CompositeData) {
@@ -89,13 +75,10 @@ public final class ConverterPipe implements JmxPipe {
             CompositeData composite = (CompositeData) value;
             CompositeType type = composite.getCompositeType();
             TreeSet<String> keysSet = new TreeSet<String>(type.keySet());
-            flatten(node, attribute + "__size", keysSet.size());
             for(String key : keysSet) {
-                flatten(node, attribute + "___" + key, composite.get(key));
+                flatten(url, attribute + "___" + key, composite.get(key));
             }
 
-        } else {
-            System.err.println(String.format("Failed to convert [%s]", attribute));
         }
     }
 

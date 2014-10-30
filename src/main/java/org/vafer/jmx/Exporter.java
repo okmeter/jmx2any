@@ -1,6 +1,6 @@
 package org.vafer.jmx;
 
-import org.vafer.jmx.output.*;
+import org.vafer.jmx.output.ConsoleOutput;
 import org.vafer.jmx.pipe.ConverterPipe;
 import org.vafer.jmx.pipe.JmxPipe;
 import org.yaml.snakeyaml.Yaml;

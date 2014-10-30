@@ -2,8 +2,7 @@ package org.vafer.jmx.pipe;
 
 import org.vafer.jmx.JmxQuery;
 import org.vafer.jmx.formatter.DefaultFormatter;
-import org.vafer.jmx.output.Enums;
-import org.vafer.jmx.output.Output;
+import org.vafer.jmx.output.ConsoleOutput;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,10 +21,10 @@ public final class ConverterPipe implements JmxPipe {
 
     private final static DefaultFormatter formatter = new DefaultFormatter();
 
-    private final Output output;
+    private final ConsoleOutput output;
     private final String prefix;
 
-    public ConverterPipe(Output output, String prefix) {
+    public ConverterPipe(ConsoleOutput output, String prefix) {
         this.output = output;
         this.prefix = prefix;
     }

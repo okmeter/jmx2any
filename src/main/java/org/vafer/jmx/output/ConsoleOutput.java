@@ -1,11 +1,8 @@
 package org.vafer.jmx.output;
 
-import org.vafer.jmx.formatter.DefaultFormatter;
-
-import javax.management.ObjectName;
 import java.io.IOException;
 
-public final class ConsoleOutput implements Output {
+public final class ConsoleOutput {
     private long time;
 
     public void open() throws IOException {

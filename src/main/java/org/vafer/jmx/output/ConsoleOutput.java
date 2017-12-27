@@ -9,12 +9,12 @@ public final class ConsoleOutput {
         time = System.currentTimeMillis() / 1000;
     }
 
-    public void output(String url, String key, Number value) throws IOException {
+    public void output(String url, String key, String value) throws IOException {
         System.out.println(String.format("%d %s %s = %s",
             time,
             url,
             key,
-            value.toString()
+            value
         ));
     }
     public void close() throws IOException {

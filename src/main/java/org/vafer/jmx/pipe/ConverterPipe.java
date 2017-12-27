@@ -45,9 +45,9 @@ public final class ConverterPipe implements JmxPipe {
 
     private void flatten(String url, String attribute, Object value) throws IOException {
         if (value instanceof Number) {
-
-            output.output(url, attribute, (Number) value);
-
+            output.output(url, attribute, value.toString());
+        } else if (value instanceof String) {
+            output.output(url, attribute, (String) value);
         } else if (value instanceof Set) {
 
             final Set set = (Set) value;

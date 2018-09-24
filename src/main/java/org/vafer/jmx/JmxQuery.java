@@ -18,9 +18,10 @@ public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
 
     public interface JmxAttribute {
 
-        public ObjectName getBeanName();
-        public String getAttributeName();
-        public Object getAttributeValue() throws InstanceNotFoundException, IOException, AttributeNotFoundException, ReflectionException, MBeanException;
+        ObjectName getBeanName();
+        String getAttributeName();
+        Object getAttributeValue() throws InstanceNotFoundException, IOException, AttributeNotFoundException,
+                ReflectionException, MBeanException;
 
     }
 
@@ -28,7 +29,7 @@ public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
 
         private final Collection<JmxAttribute> attributes;
 
-        public JmxBean(ObjectInstance mbean) throws IntrospectionException, InstanceNotFoundException, IOException, ReflectionException {
+        private JmxBean(ObjectInstance mbean) throws IntrospectionException, InstanceNotFoundException, IOException, ReflectionException {
             final ObjectName mbeanName = mbean.getObjectName();
             final MBeanInfo mbeanInfo = connection.getMBeanInfo(mbeanName);
 
@@ -62,16 +63,18 @@ public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
     }
 
     public JmxQuery(final String url, final Set<String> expressions) throws IOException, MalformedObjectNameException, IntrospectionException, InstanceNotFoundException, ReflectionException {
-        this.connector = JMXConnectorFactory.connect(new JMXServiceURL(url));
-        this.connection = connector.getMBeanServerConnection();
+        synchronized (JmxQuery.class) {
+            this.connector = JMXConnectorFactory.connect(new JMXServiceURL(url));
+            this.connection = connector.getMBeanServerConnection();
 
-        final Collection<JmxBean> mbeans = new ArrayList<JmxBean>();
-        for(String expression : expressions) {
-            for(ObjectInstance mbean : connection.queryMBeans(new ObjectName(expression), null)) {
-                mbeans.add(new JmxBean(mbean));
+            final Collection<JmxBean> mbeans = new ArrayList<JmxBean>();
+            for (String expression : expressions) {
+                for (ObjectInstance mbean : connection.queryMBeans(new ObjectName(expression), null)) {
+                    mbeans.add(new JmxBean(mbean));
+                }
             }
+            this.mbeans = mbeans;
         }
-        this.mbeans = mbeans;
     }
 
     public Iterator<JmxBean> iterator() {

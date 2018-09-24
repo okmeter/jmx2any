@@ -1,3 +1,5 @@
+interval: 5s
+
 node:
   id: test
   interval: 5s

@@ -1,0 +1,9 @@
+interval: 60s
+servers:
+- server: /proc/25643/ns/net:127.0.0.1:1099
+  queries:
+  - java.lang:type=Memory*
+  - java.lang:type=GarbageCollector,name=*
+  - java.lang:type=MemoryPool,name=*
+  - java.lang:type=Runtime
+  - java.lang:type=Threading

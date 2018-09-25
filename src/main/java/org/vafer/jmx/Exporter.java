@@ -63,28 +63,11 @@ public final class Exporter {
         JmxPipe output = config.output;
 
         output.open();
-        for(String serverConnStr : config.queries.keySet()) {
-            
-            String username = "", password = "", server = serverConnStr;;
-
-            String[] parts = serverConnStr.split("@", 2);
-            if (parts.length > 1) {
-                server = parts[1];
-                
-                String[] up = parts[0].split(":", 2);
-                username = up[0];
-                if (up.length > 1) {
-                    password = up[1];
-                }
-            }
-
+        for(String server : config.queries.keySet()) {
             System.out.println("server " + server);
-
             JmxQuery query = new JmxQuery(
                 String.format("service:jmx:rmi:///jndi/rmi://%s/jmxrmi", server),
-                username,
-                password,
-                queries.get(serverConnStr)
+                queries.get(server)
             );
             for(JmxQuery.JmxBean bean : query) {
                 for(JmxQuery.JmxAttribute attribute : bean) {

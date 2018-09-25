@@ -30,6 +30,11 @@ public final class Main {
             System.exit(1);
         }
 
+        // connections mess workaround
+        // shit happens if we monitoring several apps in containers with "same" rmi host:port
+        // so we configure sun.rmi.transport.tcp.TCPChannel.reaper to clear connections cache immediately
+        System.setProperty("sun.rmi.transport.connectionTimeout", "1");
+
         JmxPipe output = new ConverterPipe(new ConsoleOutput(), "");
         try {
             final Config config = Config.load(configPath);

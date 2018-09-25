@@ -49,6 +49,16 @@ public final class Main {
                 Worker worker = new Worker(sq.getKey(), sq.getValue(), output, repeatDelay);
                 worker.start();
             }
+
+            if (agent) {
+                // exit when stdin closed
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                String s;
+                while ((s = br.readLine()) != null && s.length() != 0) {
+                    System.out.println(s);
+                }
+                System.exit(0);
+            }
         } catch (Exception e) {
             System.err.println("jmx2any: " + e);
             System.exit(1);

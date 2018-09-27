@@ -11,7 +11,7 @@ public final class Exporter {
         JmxQuery query = null;
         try {
             query = new JmxQuery(
-                    String.format("service:jmx:rmi:///jndi/rmi://%s:%s/jmxrmi", server.getHost(), server.getPort()),
+                    String.format("service:jmx:rmi:///jndi/rmi://%s/jmxrmi", server.getHostPort()),
                     queries
             );
             for (JmxQuery.JmxBean bean : query) {

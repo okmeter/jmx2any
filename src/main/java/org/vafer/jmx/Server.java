@@ -4,37 +4,22 @@ public class Server {
 
     private final String id;
 
-    private final String host;
-
-    private final String port;
+    private final String hostPort;
 
     private final String nsPath;
 
-    public Server(String nsHostPort) throws Exception {
-        this.id = nsHostPort;
-        String[] parts = nsHostPort.split(":");
-        switch (parts.length) {
-            case 2:
-                this.nsPath = "";
-                this.host = parts[0];
-                this.port = parts[1];
-                break;
-            case 3:
-                this.nsPath = parts[0];
-                this.host = parts[1];
-                this.port = parts[2];
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid server: " + nsHostPort);
+    public Server(String hostPort, String nsPath) throws Exception {
+        this.hostPort = hostPort;
+        this.nsPath = nsPath;
+        if (nsPath != null) {
+            this.id = nsPath + ":" + hostPort;
+        } else {
+            this.id = hostPort;
         }
     }
 
-    public String getHost() {
-        return host;
-    }
-
-    public String getPort() {
-        return port;
+    public String getHostPort() {
+        return hostPort;
     }
 
     public String getNsPath() {
@@ -63,6 +48,6 @@ public class Server {
 
     @Override
     public String toString() {
-        return String.format("Server{host='%s', port='%s', ns='%s'}", host, port, nsPath);
+        return String.format("Server{hostPort='%s', ns='%s'}", hostPort, nsPath);
     }
 }

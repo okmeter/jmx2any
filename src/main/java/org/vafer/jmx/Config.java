@@ -35,7 +35,12 @@ public class Config {
 
         ArrayList<Map<String, ?>> servers = (ArrayList) configMap.get("servers");
         for(Map<String, ?> serverConfig : servers) {
-            Server server = new Server((String) serverConfig.get("server"));
+            String hostPort = (String) serverConfig.get("server");
+            String nsPath = (String) serverConfig.get("ns");
+            if (nsPath != null && nsPath.trim().isEmpty()) {
+                nsPath = null;
+            }
+            Server server = new Server(hostPort, nsPath);
             Set<String> queries = flattenAsStringSet(serverConfig, "queries");
             queriesByServer.put(server, queries);
         }

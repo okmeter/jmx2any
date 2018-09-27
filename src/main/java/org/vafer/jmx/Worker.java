@@ -38,7 +38,7 @@ public class Worker extends Thread {
 
     @Override
     public void run() {
-        if (server.getNsPath() != "") {
+        if (server.getNsPath() != null) {
             try {
                 NativeUtil.setns(server.getNsPath());
             } catch (IOException e) {

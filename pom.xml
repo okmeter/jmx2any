@@ -5,7 +5,7 @@
     <groupId>org.vafer</groupId>
     <artifactId>jmx2any</artifactId>
     <name>jmx2any</name>
-    <version>1.1.2</version>
+    <version>1.1.4</version>
     <description>
     </description>
     <url>http://github.com/tcurdt/jmx2any</url>
@@ -47,6 +47,16 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>4.4.0</version>
         </dependency>
         <!--
         <dependency>
@@ -124,6 +134,8 @@
                                     <include>com.beust:jcommander</include>
                                     <include>org.acplt:oncrpc</include>
                                     <include>org.yaml:snakeyaml</include>
+                                    <include>net.java.dev.jna:jna</include>
+                                    <include>net.java.dev.jna:jna-platform</include>
                                     <!--
                                     <include>com.googlecode.jsendnsca:jsendnsca</include>
                                     -->

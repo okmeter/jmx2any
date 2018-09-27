@@ -1,17 +1,21 @@
 package org.vafer.jmx.pipe;
 
-import org.vafer.jmx.JmxQuery;
+import java.io.IOException;
 
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
 import javax.management.ReflectionException;
-import java.io.IOException;
+
+import org.vafer.jmx.JmxQuery;
 
 public interface JmxPipe {
 
-    public void open() throws IOException;
-    public void output(String url, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException, AttributeNotFoundException, ReflectionException, MBeanException;
-    public void close() throws IOException;
+    void open() throws IOException;
+
+    void output(String url, JmxQuery.JmxAttribute metric) throws IOException, InstanceNotFoundException,
+            AttributeNotFoundException, ReflectionException, MBeanException;
+
+    void close() throws IOException;
 
 }

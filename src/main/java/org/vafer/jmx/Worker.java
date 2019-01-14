@@ -50,7 +50,7 @@ public class Worker extends Thread {
         if (repeatDelay <= 0) {
             runOnce(exporter);
         } else {
-            executor.scheduleWithFixedDelay(new Runnable() {
+            executor.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     runOnce(exporter);

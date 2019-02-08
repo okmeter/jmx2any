@@ -5,10 +5,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
 
@@ -19,7 +16,9 @@ public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
     public interface JmxAttribute {
 
         ObjectName getBeanName();
+
         String getAttributeName();
+
         Object getAttributeValue() throws InstanceNotFoundException, IOException, AttributeNotFoundException,
                 ReflectionException, MBeanException;
 
@@ -29,30 +28,37 @@ public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
 
         private final Collection<JmxAttribute> attributes;
 
-        private JmxBean(ObjectInstance mbean) throws IntrospectionException, InstanceNotFoundException, IOException, ReflectionException {
+        private JmxBean(ObjectInstance mbean, Set<String> attrNames) throws IntrospectionException, InstanceNotFoundException, IOException, ReflectionException {
             final ObjectName mbeanName = mbean.getObjectName();
             final MBeanInfo mbeanInfo = connection.getMBeanInfo(mbeanName);
 
             final Collection<JmxAttribute> attributes = new ArrayList<JmxAttribute>();
             for (final MBeanAttributeInfo attribute : mbeanInfo.getAttributes()) {
-                if (attribute.isReadable()) {
-                    attributes.add(new JmxAttribute() {
-                        private Object value;
-                        public ObjectName getBeanName() {
-                            return mbeanName;
-                        }
-                        public String getAttributeName() {
-                            return attribute.getName();
-                        }
-                        public Object getAttributeValue() throws InstanceNotFoundException, IOException, AttributeNotFoundException, ReflectionException, MBeanException {
-                            if (value == null) {
-                                // System.out.println("> reading " + this.getAttributeName());
-                                value = connection.getAttribute(mbeanName, attribute.getName());
-                            }
-                            return value;
-                        }
-                    });
+                if (!attribute.isReadable()) {
+                    continue;
                 }
+                if (attrNames.size() != 0 && !attrNames.contains(attribute.getName())) {
+                    continue;
+                }
+                attributes.add(new JmxAttribute() {
+                    private Object value;
+
+                    public ObjectName getBeanName() {
+                        return mbeanName;
+                    }
+
+                    public String getAttributeName() {
+                        return attribute.getName();
+                    }
+
+                    public Object getAttributeValue() throws InstanceNotFoundException, IOException, AttributeNotFoundException, ReflectionException, MBeanException {
+                        if (value == null) {
+                            // System.out.println("> reading " + this.getAttributeName());
+                            value = connection.getAttribute(mbeanName, attribute.getName());
+                        }
+                        return value;
+                    }
+                });
             }
             this.attributes = attributes;
         }
@@ -68,9 +74,16 @@ public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
             this.connection = connector.getMBeanServerConnection();
 
             final Collection<JmxBean> mbeans = new ArrayList<JmxBean>();
+            final Set<String> attrNames = new HashSet<String>();
             for (String expression : expressions) {
-                for (ObjectInstance mbean : connection.queryMBeans(new ObjectName(expression), null)) {
-                    mbeans.add(new JmxBean(mbean));
+                String[] parts = expression.split(";", 2);
+                if (parts.length > 1 && parts[1].length() > 0) {
+                    for (String attr : parts[1].split(",")) {
+                        attrNames.add(attr);
+                    }
+                }
+                for (ObjectInstance mbean : connection.queryMBeans(new ObjectName(parts[0]), null)) {
+                    mbeans.add(new JmxBean(mbean, attrNames));
                 }
             }
             this.mbeans = mbeans;

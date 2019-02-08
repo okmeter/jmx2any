@@ -1,12 +1,7 @@
 package org.vafer.jmx;
 
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.vafer.jmx.util.NativeUtil;
 import org.yaml.snakeyaml.Yaml;
@@ -62,7 +57,7 @@ public class Config {
     }
 
     private static Set<String> flattenAsStringSet(Map map, String key) {
-        Set<String> result = new TreeSet<String>();
+        Set<String> result = new LinkedHashSet<String>();
         Object report = map.get(key);
         if (report instanceof Collection) {
             for(Object r : (Collection) report) {

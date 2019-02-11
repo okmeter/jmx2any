@@ -74,8 +74,8 @@ public final class JmxQuery implements Iterable<JmxQuery.JmxBean> {
             this.connection = connector.getMBeanServerConnection();
 
             final Collection<JmxBean> mbeans = new ArrayList<JmxBean>();
-            final Set<String> attrNames = new HashSet<String>();
             for (String expression : expressions) {
+                Set<String> attrNames = new HashSet<String>();
                 String[] parts = expression.split(";", 2);
                 if (parts.length > 1 && parts[1].length() > 0) {
                     for (String attr : parts[1].split(",")) {
